@@ -34,7 +34,10 @@ def make_hollow(input_file, output_file, wall_thickness=2.0):
     # This is an approximation - actual wall thickness may vary
     min_dim = min(dimensions)
     scale_factor = (min_dim - 2 * wall_thickness) / min_dim
-    scale_factor = max(0.7, min(scale_factor, 0.95))  # Keep between 0.7 and 0.95
+    # Keep scale factor between 0.7 and 0.95:
+    # - 0.7 minimum ensures at least 30% size reduction for structural integrity
+    # - 0.95 maximum prevents walls from being too thin (< 5% of original size)
+    scale_factor = max(0.7, min(scale_factor, 0.95))
     
     print(f"\nCreating hollow shell with wall thickness ~{wall_thickness}mm...")
     print(f"  - Scale factor for inner surface: {scale_factor:.3f}")
@@ -66,4 +69,6 @@ def make_hollow(input_file, output_file, wall_thickness=2.0):
     print(f"This should save approximately {(1 - scale_factor**3) * 100:.1f}% of material/ink.")
 
 if __name__ == "__main__":
+    # Note: This will overwrite the original Top.stl file
+    # Make a backup first if you want to preserve the original
     make_hollow("Top.stl", "Top.stl", wall_thickness=2.0)
